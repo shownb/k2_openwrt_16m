@@ -68,7 +68,7 @@ jobs:
         run: |
           cd openwrt
           rm -f .config*
-          cp ../21.02/config.config .config
+          cp ../21.02/simple.config .config
           make defconfig
 
       - name: 下载编译所需源码
@@ -98,5 +98,5 @@ jobs:
       - name: 上传固件
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.FIRMWARE }}
+          name: "16m_spi_k2"
           path: ./openwrt/bin/targets/
