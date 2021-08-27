@@ -56,8 +56,9 @@ jobs:
       - name: 构建程序包
         run: |
           cd openwrt
-          echo -e "src-git routing https://git.openwrt.org/feed/routing.git" >> feeds.conf.default
-          echo -e "src-git telephony https://git.openwrt.org/feed/telephony.git" >> feeds.conf.default
+          echo "here do noting"
+          #echo -e "src-git routing https://git.openwrt.org/feed/routing.git" >> feeds.conf.default
+          #echo -e "src-git telephony https://git.openwrt.org/feed/telephony.git" >> feeds.conf.default
           
           ./scripts/feeds clean
           ./scripts/feeds update -a
