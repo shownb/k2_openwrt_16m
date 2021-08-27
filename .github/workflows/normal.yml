@@ -1,4 +1,4 @@
-name: K2
+name: K2_8M_Spi
 
 on:
   repository_dispatch:
