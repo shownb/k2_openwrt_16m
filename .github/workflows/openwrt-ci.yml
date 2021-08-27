@@ -1,4 +1,4 @@
-name: CI
+name: K2
 
 on:
   repository_dispatch:
@@ -23,8 +23,8 @@ jobs:
       run: |
         rm -rf ./artifact/
         mkdir -p ./artifact/
-        ls -la ./openwrt-imagebuilder-21.02.0-rc4-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620
-        ls -la ./openwrt-imagebuilder-21.02.0-rc4-ramips-mt7620.Linux-x86_64/build_dir/target-mipsel_24kc_musl/linux-ramips_mt7620/tmp/
+        cp ./target/linux/ramips/image/mt7620.mk ./artifact/
+        cp ./target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi ./artifact/
         find ./ -name "*sysupgrade*bin" | xargs -i mv -f {} ./artifact/
     - name: Upload artifact
       uses: actions/upload-artifact@master
