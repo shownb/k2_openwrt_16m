@@ -24,8 +24,6 @@ jobs:
         rm -rf ./artifact/
         mkdir -p ./artifact/
         find ./ -name "*sysupgrade*bin" | xargs -i mv -f {} ./artifact/
-        cp ./openwrt-imagebuilder-21.02.0-rc4-ramips-mt7620.Linux-x86_64/target/linux/ramips/image/mt7620.mk ./artifact/
-        cp ./openwrt-imagebuilder-21.02.0-rc4-ramips-mt7620.Linux-x86_64/target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi ./artifact/
       continue-on-error: true
     - name: Upload artifact
       uses: actions/upload-artifact@master
