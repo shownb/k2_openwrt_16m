@@ -1,122 +1,104 @@
 #=================================================
+# https://github.com/miaoxinwei/openwrt_build
 # Description: Build OpenWrt using GitHub Actions
-# Lisence: MIT
-# Author: P3TERX
-# Blog: https://p3terx.com for k2
+# Lisence: AGPL-3.0
+# Author: MXW
 #=================================================
 
-name: Build OpenWrt 16M
+name: 16m 固件
 
 on:
   repository_dispatch:
   workflow_dispatch:
 
+env:
+  TZ: Asia/Shanghai
+
+
+
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - name: 校验本地文件
+        uses: actions/checkout@master
+        with:
+          ref: master
 
-    - name: Initialization environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        docker rmi `docker images -q`
-        echo "Deleting files, please wait ..."
-        sudo rm -rf \
-          /usr/share/dotnet \
-          /etc/mysql \
-          /etc/php
-        sudo -E apt-get -y purge \
-          azure-cli \
-          ghc* \
-          zulu* \
-          hhvm \
-          llvm* \
-          firefox \
-          google* \
-          dotnet* \
-          powershell \
-          openjdk* \
-          mysql* \
-          php*
-        sudo -E apt-get update
-        sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get clean
+      - name: 安装编译环境
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
+          sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3.5 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf
+          sudo -E apt-get -y autoremove --purge
+          sudo -E apt-get clean
+          
+          sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          sudo timedatectl set-timezone "$TZ"
 
-    - name: Clone source code
-      env: 
-        REPO_URL: https://github.com/openwrt/openwrt
-        REPO_BRANCH: openwrt-19.07
-      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
-        
-    - name: add 16M config
-      run: |
-           cd openwrt
-           curl https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620.mk -L -o ./target/linux/ramips/image/mt7620.mk
-           curl https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620a_phicomm_psg1218.dtsi -L -o ./target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi
-           
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
+          FILE_NAME=$(cat Lienol/master/buildInfo.yml | grep version | awk '{print $2}')
+          echo "::set-env name=FIRMWARE::$FILE_NAME"
 
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
-           
-    - name: Load custom configuration
-      run: |
-        [ -e files ] && mv files openwrt/files
-        cd openwrt
-        rm -f ./.config*
-        touch ./.config
+      - name: 克隆代码
+        env:
+          REPO_URL: https://github.com/openwrt/openwrt
+          REPO_BRANCH: 21.02
+        run: git clone $REPO_URL -b $REPO_BRANCH openwrt
 
-        cat >> .config <<EOF
-        CONFIG_TARGET_ramips=y
-        CONFIG_TARGET_ramips_mt7620=y
-        CONFIG_TARGET_ramips_mt7620_DEVICE_phicomm_psg1218a=y
-        EOF
+      - name: 自定义配置
+        env:
+          CUSTOM_SH: 'custom.sh'
+        run: |
+          cd openwrt
+          mv ../Lienol/master/$CUSTOM_SH ./ && chmod 777 $CUSTOM_SH && ./$CUSTOM_SH
 
-        cat >> .config <<EOF
-        CONFIG_DEFAULT_opkg=y
-        CONFIG_DEFAULT_libc=y
-        CONFIG_PACKAGE_luci-app-firewall=y
-        CONFIG_PACKAGE_luci-app-uhttpd=y
-        CONFIG_PACKAGE_luci-app-opkg=y
+      - name: 构建程序包
+        run: |
+          cd openwrt
+          echo -e "src-git routing https://git.openwrt.org/feed/routing.git" >> feeds.conf.default
+          echo -e "src-git telephony https://git.openwrt.org/feed/telephony.git" >> feeds.conf.default
+          
+          ./scripts/feeds clean
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
-        EOF
-        # LuCI主题:
-        cat >> .config <<EOF
-        CONFIG_PACKAGE_luci-theme-bootstrap=y
-        # CONFIG_PACKAGE_luci-theme-netgear=y
-        EOF
+      - name: config文件
+        run: |
+          cd openwrt
+          rm -f .config*
+          cp ../config.config .config
+          make defconfig
 
-        sed -i 's/^[ \t]*//g' ./.config
-        make defconfig
-      
-    - name: Download package
-      run: |
-        cd openwrt && make download -j8
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
-           
-    - name: Build
-      run: |
-        cd openwrt
-        echo -e "$(nproc) thread build."
-        make -j$(nproc) V=s
+      - name: 下载编译所需源码
+        run: |
+          cd openwrt
+          make download -j8
+          find dl -size -1024c -exec rm -f {} \;
 
-    - name: Assemble artifact
-      run: |
-        cd openwrt
-        rm -rf ./artifact/
-        mkdir -p ./artifact/
-        find ./bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./artifact/
-        find ./bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./artifact/
-        
-    - name: Upload artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: OpenWrt phicomm k2
-        path: ./openwrt/artifact/
+      - name: 多线程编译
+        run: |
+          cd openwrt
+          echo -e "$(nproc) thread build."
+          make -j$(nproc) V=s
+          
+      - name: 单线程编译
+        if: failure()
+        run: |
+          cd openwrt
+          make -j1 V=s
+
+      - name: 清理不必要的文件
+        run: |
+          cd openwrt
+          find ./bin/targets/ -type d -name "packages" | xargs rm -rf {}
+          find ./bin/targets/ -name "*rootfs*img*" | xargs rm -rf {}
+
+      - name: 上传固件
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.FIRMWARE }}
+          path: ./openwrt/bin/targets/
