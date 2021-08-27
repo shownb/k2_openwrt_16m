@@ -1,7 +1,7 @@
  version="21.02.0-rc4"
  wget https://downloads.openwrt.org/releases/${version}/targets/ramips/mt7620/openwrt-imagebuilder-${version}-ramips-mt7620.Linux-x86_64.tar.xz
  xz -d openwrt-imagebuilder-${version}-ramips-mt7620.Linux-x86_64.tar.xz
- tar -xvf openwrt-imagebuilder-${version}-ramips-mt7620.Linux-x86_64.tar
+ tar -xf openwrt-imagebuilder-${version}-ramips-mt7620.Linux-x86_64.tar
  cd openwrt-imagebuilder-${version}-ramips-mt7620.Linux-x86_64
  ls -la
  wget -P ./target/linux/ramips/image https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620.mk -O mt7620.mk
