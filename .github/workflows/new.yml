@@ -54,7 +54,7 @@ jobs:
           CUSTOM_SH: 'custom.sh'
         run: |
           cd openwrt
-          mv ../Lienol/master/$CUSTOM_SH ./ && chmod 777 $CUSTOM_SH && ./$CUSTOM_SH
+          mv ../21.02/$CUSTOM_SH ./ && chmod 777 $CUSTOM_SH && ./$CUSTOM_SH
 
       - name: 构建程序包
         run: |
@@ -70,7 +70,7 @@ jobs:
         run: |
           cd openwrt
           rm -f .config*
-          cp ../config.config .config
+          cp ../21.02/config.config .config
           make defconfig
 
       - name: 下载编译所需源码
