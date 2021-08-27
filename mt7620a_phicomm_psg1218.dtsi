@@ -6,13 +6,6 @@
 / {
 	compatible = "phicomm,psg1218", "ralink,mt7620a-soc";
 
-	aliases {
-		led-boot = &led_blue;
-		led-failsafe = &led_blue;
-		led-running = &led_blue;
-		led-upgrade = &led_blue;
-	};
-
 	keys {
 		compatible = "gpio-keys";
 
@@ -22,32 +15,16 @@
 			linux,code = <KEY_RESTART>;
 		};
 	};
+};
 
-	leds {
-		compatible = "gpio-leds";
-
-		led_blue: blue {
-			label = "blue:status";
-			gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
-			default-state = "on";
-		};
-
-		yellow {
-			label = "yellow:status";
-			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
-		};
-
-		red {
-			label = "red:status";
-			gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
-		};
-	};
+&gpio0 {
+	status = "okay";
 };
 
 &spi0 {
 	status = "okay";
 
-	flash@0 {
+	m25p80@0 {
 		compatible = "jedec,spi-nor";
 		reg = <0>;
 		spi-max-frequency = <10000000>;
@@ -78,7 +55,7 @@
 			partition@40000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0x50000 0x7b0000>;
+				reg = <0x50000 0x1fb0000>;
 			};
 		};
 	};
@@ -97,5 +74,5 @@
 };
 
 &wmac {
-	ralink,mtd-eeprom = <&factory 0x0>;
+	ralink,mtd-eeprom = <&factory 0>;
 };
