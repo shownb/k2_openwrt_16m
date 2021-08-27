@@ -7,6 +7,6 @@
  wget -P ./target/linux/ramips/image https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620.mk -O mt7620.mk
  wget -P ./target/linux/ramips/dts https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620a_phicomm_psg1218.dtsi -O mt7620a_phicomm_psg1218.dtsi
  #make info
- #make image PROFILE=phicomm_psg1218a PACKAGES="" CONFIG_IPV6=n
+ make image PROFILE=phicomm_psg1218a PACKAGES="uhttpd uhttpd-mod-ubus libiwinfo-lua luci-base luci-app-firewall luci-mod-admin-full luci-app-ddns -ip6tables -odhcp6c -kmod-ipv6 -kmod-ip6tables -odhcpd-ipv6only" CONFIG_IPV6=n
 #uhttpd uhttpd-mod-ubus libiwinfo-lua luci-base luci-app-firewall luci-mod-admin-full luci-app-ddns -ip6tables -odhcp6c -kmod-ipv6 -kmod-ip6tables -odhcpd-ipv6only
 #uhttpd luci-base luci-app-shadowsocks-libev shadowsocks-libev-ss-local -ip6tables -odhcp6c -kmod-ipv6 -kmod-ip6tables -odhcpd-ipv6only
