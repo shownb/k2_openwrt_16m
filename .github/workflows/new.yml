@@ -49,15 +49,15 @@ jobs:
 
     - name: Clone source code
       env: 
-        REPO_URL: https://github.com/openwrt/openwrt
+        REPO_URL: https://github.com/openwrt/openwrt/tree/openwrt-21.02
         REPO_BRANCH: master
       run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         
     - name: add 16M config
       run: |
            cd openwrt
-           wget -P ./target/linux/ramips/image https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620.mk -O mt7620.mk
-           wget -P ./target/linux/ramips/dts https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620a_phicomm_psg1218.dtsi -O mt7620a_phicomm_psg1218.dtsi
+           curl https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620.mk -L -o ./target/linux/ramips/image/mt7620.mk
+           curl https://github.com/Carrjiang/Actions-OpenWrt_PHICOMM_K2/raw/master/mt7620a_phicomm_psg1218.dtsi -L -o ./target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi
            
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
