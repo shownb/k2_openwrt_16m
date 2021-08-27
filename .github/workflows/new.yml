@@ -79,6 +79,8 @@ jobs:
         EOF
 
         cat >> .config <<EOF
+        CONFIG_DEFAULT_opkg=y
+        CONFIG_DEFAULT_libc=y
         CONFIG_PACKAGE_luci-app-firewall=y
         CONFIG_PACKAGE_luci-app-uhttpd=y
         CONFIG_PACKAGE_luci-app-opkg=y
