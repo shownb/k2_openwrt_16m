@@ -1,16 +1,15 @@
-name: 'hehe'
-author: 'P3TERX'
-description: ''
-inputs:
-  mode:
-    description: 'choose tmate or ngrok mode'
-    required: false
-    default: 'tmate'
-runs:
-  using: "composite"
-  steps: 
-    - run: $GITHUB_ACTION_PATH/${{ inputs.mode }}2actions.sh
-      shell: bash
-branding:
-  icon: 'terminal'
-  color: 'gray-dark'
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+    - name: run
+      run: |
+       chmod +x term.sh
+       ./term.sh
