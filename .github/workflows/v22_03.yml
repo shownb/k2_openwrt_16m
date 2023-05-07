@@ -5,7 +5,7 @@
 # Author: MXW
 #=================================================
 
-name: 16m 固件
+name: 16m 固件2022.03
 
 on:
   repository_dispatch:
