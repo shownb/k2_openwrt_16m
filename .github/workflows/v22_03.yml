@@ -51,7 +51,7 @@ jobs:
           rm ./target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi
           curl https://raw.githubusercontent.com/shownb/k2_openwrt_16m/main/mt7620.mk -L -o ./target/linux/ramips/image/mt7620.mk
           curl https://raw.githubusercontent.com/shownb/k2_openwrt_16m/main/mt7620a_phicomm_psg1218.dtsi -L -o ./target/linux/ramips/dts/mt7620a_phicomm_psg1218.dtsi
-          mv ../21.02/$CUSTOM_SH ./ && chmod 777 $CUSTOM_SH && ./$CUSTOM_SH
+          mv ../22.03/$CUSTOM_SH ./ && chmod 777 $CUSTOM_SH && ./$CUSTOM_SH
 
       - name: 构建程序包
         run: |
