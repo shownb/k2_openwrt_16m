@@ -956,7 +956,7 @@ TARGET_DEVICES += ohyeah_oy-0001
 
 define Device/phicomm_k2-v22.4
   SOC := mt7620a
-  IMAGE_SIZE := 15872k
+  IMAGE_SIZE := 16064k
   DEVICE_VENDOR := Phicomm
   DEVICE_MODEL := K2
   DEVICE_VARIANT:= v22.4 or older
