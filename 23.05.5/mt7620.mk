@@ -959,7 +959,7 @@ define Device/phicomm_k2-v22.4
   IMAGE_SIZE := 16064k
   DEVICE_VENDOR := Phicomm
   DEVICE_MODEL := K2
-  DEVICE_VARIANT:= v22.4 or older
+  DEVICE_VARIANT := 16M
   DEVICE_PACKAGES := kmod-mt76x2
   SUPPORTED_DEVICES += psg1218 psg1218a phicomm,psg1218a
 endef
