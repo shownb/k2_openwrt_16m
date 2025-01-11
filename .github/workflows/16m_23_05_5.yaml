@@ -15,8 +15,8 @@ jobs:
         sudo -E apt-get install build-essential libncurses5-dev libncursesw5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip
     - name: run compile.sh
       run: |
-        sudo chmod +x ./25.05.5/compile.sh
-        ./25.05.5/compile.sh
+        sudo chmod +x ./23.05.5/compile.sh
+        ./23.05.5/compile.sh
     - name: Assemble artifact
       run: |
         rm -rf ./artifact/
